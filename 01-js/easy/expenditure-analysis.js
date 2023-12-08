@@ -14,7 +14,25 @@
 */
 
 function calculateTotalSpentByCategory(transactions) {
-  return [];
+  const result = [];
+
+  transactions.forEach(transaction => {
+    //de-structure the transaction object
+    const {category, price} = transaction;
+
+    //if we find and entry in result to already having that category, then we edit its price
+    const existingCategory = result.find(entry => entry.category === category);
+
+    if (existingCategory !== undefined) {
+      existingCategory.totalSpent += price;     //please keep track of correct variable names used bro takes tonne of time to find/look 
+    }
+    //else we just push it to result
+    else {
+      result.push({"category": category, "totalSpent": price});
+    }
+  })
+  
+  return result;
 }
 
 module.exports = calculateTotalSpentByCategory;
