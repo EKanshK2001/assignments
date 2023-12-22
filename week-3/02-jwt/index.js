@@ -1,5 +1,10 @@
 const jwt = require('jsonwebtoken');
 const jwtPassword = 'secret';
+const z = require('zod');
+
+
+usernameSchema = z.string().email();
+passwordSchema = z.string().min(6);
 
 
 /**
@@ -15,6 +20,17 @@ const jwtPassword = 'secret';
  */
 function signJwt(username, password) {
     // Your code here
+    const usernameResponse = usernameSchema.safeParse(username);
+    const passwordResponse = passwordSchema.safeParse(password);
+
+    if (!usernameResponse.success || !passwordResponse.success) {
+        return null;
+    }
+
+    const signature = jwt.sign({username, password}, jwtPassword);
+    console.log(signature);
+
+    return signature;
 }
 
 /**
@@ -27,17 +43,29 @@ function signJwt(username, password) {
  */
 function verifyJwt(token) {
     // Your code here
+    try {
+        jwt.verify(token, jwtPassword)
+        return true;
+    } catch (error) {
+        return false;
+    }
+
 }
 
 /**
  * Decodes a JWT to reveal its payload without verifying its authenticity.
  *
  * @param {string} token - The JWT string to decode.
- * @returns {object|false} The decoded payload of the JWT if the token is a valid JWT format.
+ * @returns {object|false} Returns true if the decoded payload of the JWT if the token is a valid JWT format.
  *                         Returns false if the token is not a valid JWT format.
  */
 function decodeJwt(token) {
     // Your code here
+    const decoded = jwt.decode(token);
+    if (decoded) {
+        return true;
+    }
+    else return false;
 }
 
 
